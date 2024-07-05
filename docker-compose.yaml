@@ -1,0 +1,38 @@
+services:
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+  prometheus:  
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - 9100:9100
+    restart: always
+  ping-exporter:
+    image: czerwonk/ping_exporter
+    container_name: ping-exporter
+    ports:
+      - 9427:9427
+    restart: always
+    volumes:
+      - ./ping-exporter:/config:ro
+
+volumes:
+  grafana-storage: {}
+  prom_data: {}
