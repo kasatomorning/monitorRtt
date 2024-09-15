@@ -1,0 +1,29 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+
+common:
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+  replication_factor: 1
+  path_prefix: /loki
+
+schema_config:
+  configs:
+    - from: 2020-01-01
+      # 2.8以降はtsdbが推奨
+      store: tsdb
+      object_store: filesystem
+      # 参考:https://grafana.com/docs/loki/latest/configure/#period_config
+      schema: v13
+      # 参考:https://grafana.com/docs/loki/latest/operations/storage/retention/
+      index:
+        prefix: index_
+        period: 24h
+
+storage_config:
+  filesystem:
+    directory: /loki/chunks

@@ -4,7 +4,7 @@ services:
     container_name: grafana
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      - 3000:3000
     volumes:
       - grafana-storage:/var/lib/grafana
   prometheus:  
@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./prometheus:/etc/prometheus
-      - prom_data:/prometheus
+      - prom-data:/prometheus
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
@@ -32,7 +32,18 @@ services:
     restart: always
     volumes:
       - ./ping-exporter:/config:ro
-
+  loki:
+    container_name: loki
+    image: grafana/loki:3.0.1
+    ports:
+      - 3100:3100
+    volumes:
+      - loki-storage:/loki
+      - ./loki:/etc/loki
+    restart: alwaysz
+    command: -config.file=/etc/loki/loki-local-conf.yaml
+ 
 volumes:
   grafana-storage: {}
-  prom_data: {}
+  prom-data: {}
+  loki-storage: {}
